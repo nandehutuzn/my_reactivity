@@ -104,7 +104,13 @@ export function ref (raw) {
 
 export function toRefs (proxy) {
   const ret = proxy instanceof Array ? new Array(proxy.length) : {}
-
+  /* 
+    传入的proxy对象每个属性已经做过响应式处理，
+    这里需要解决的问题是当proxy对象属性被解构出来，
+    操作某个属性是，它的响应式依然有效，
+    解决办法是改变一下proxy对象最外层属性取值/赋值路径，
+    当proxy某个属性被解构出来，我们把对这个值的操作转接到proxy的这个属性下即可
+  */
   for(const key in proxy) {
     ret[key] = toProxyRef(proxy, key)
   }
